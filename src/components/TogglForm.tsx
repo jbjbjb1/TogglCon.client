@@ -66,7 +66,6 @@ export default function TogglForm() {
           <input
             type="text"
             name="apiKey"
-            defaultValue="b6228161ce875647f9a9c5ce8f23781f"
             onInvalid={(e) =>
               e.target.setCustomValidity("Please enter your Toggl API key")
             }
