@@ -9,12 +9,17 @@ export default function TogglForm() {
     setLoading("Loading...");
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
+    const togglapikey = formData.get("togglapikey");
+    const email = formData.get("email");
+    const date = formData.get("date");
+    const raw = JSON.stringify({ togglapikey, email, date });
+    console.log(raw);
     const fetchData = async () => {
       const response = await fetch(
-        "https://58axq7c4ih.execute-api.ap-southeast-2.amazonaws.com/dev",
+        "https://6worz4cmw2.execute-api.ap-southeast-2.amazonaws.com/dev",
         {
           method: form.method,
-          body: JSON.stringify({ firstName: "Joe", lastName: "Bloggs", formData }),
+          body: raw,
           headers: { "Content-Type": "application/json" },
         }
       );
@@ -69,7 +74,7 @@ export default function TogglForm() {
           API key
           <input
             type="text"
-            name="apiKey"
+            name="togglapikey"
             onInvalid={(e) =>
               (e.target as HTMLInputElement).setCustomValidity(
                 "Please enter your Toggl API key"
