@@ -1,7 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+interface TogglResponse {
+  data: {
+    Date: { [key: string]: string };
+    Branch: { [key: string]: string };
+    "Charge Type": { [key: string]: string };
+    "Project No": { [key: string]: string };
+    "Job No": { [key: string]: string };
+    Description: { [key: string]: string };
+    Hours: { [key: string]: string };
+  };
+}
+
+const TogglReply = ({ data }: TogglResponse) => {
+  const [rows, setRows] = useState<JSX.Element[]>();
+  useEffect(() => {
+    const dataEntries = Object.entries(data ?? []);
+    const dataEntriesFormatted = dataEntries.map((entry) => {
+      return Object.values(entry[1]);
+    });
+    const length = dataEntriesFormatted?.[0]?.length;
+    function genRows() {
+      let newRows = [];
+      for (let i = 0; i < length; i++) {
+        newRows.push(
+          <tr key={"row-" + i}>
+            {dataEntriesFormatted.map((column) => {
+              return (
+                <td
+                  key={i + "-" + column[i]}
+                  className="border border-solid border-black p-1"
+                >
+                  {column[i]}
+                </td>
+              );
+            })}
+          </tr>
+        );
+      }
+      setRows(newRows);
+    }
+    genRows();
+  }, [data]);
+  return (
+    <div className="flex mt-4">
+      <table className="mx-auto border border-solid border-black">
+        <tbody>
+          <tr>
+            {[
+              "Date",
+              "Branch",
+              "Charge Type",
+              "Project No.",
+              "Job No.",
+              "Description",
+              "Hours",
+            ].map((name) => {
+              return (
+                <td key={name} className="border border-solid border-black p-1">
+                  {name}
+                </td>
+              );
+            })}
+          </tr>
+          {rows}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 export default function TogglForm() {
   const [loading, setLoading] = useState("Submit");
+  const [data, setData] = useState<TogglResponse>();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     console.log("submit");
@@ -31,8 +101,9 @@ export default function TogglForm() {
       }
       console.log(formData);
       const data = await response.json();
-      console.log(data);
       setLoading("Success");
+      console.log(data);
+      setData(JSON.parse(data.body));
     };
     fetchData();
   }
@@ -104,6 +175,8 @@ export default function TogglForm() {
           {loading}
         </button>
       </form>
+      {/*@ts-ignore*/}
+      {data?.Date && <TogglReply data={data} />}
     </div>
   );
 }
