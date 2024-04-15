@@ -1,70 +1,99 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+interface DataRow {
+  Date: string;
+  Branch: string;
+  "Charge Type": string;
+  "Project No": string;
+  "Job No": string;
+  Description: string;
+  Hours: string;
+}
+
 interface TogglResponse {
-  data: {
-    Date: { [key: string]: string };
-    Branch: { [key: string]: string };
-    "Charge Type": { [key: string]: string };
-    "Project No": { [key: string]: string };
-    "Job No": { [key: string]: string };
-    Description: { [key: string]: string };
-    Hours: { [key: string]: string };
-  };
+  data: { Data: DataRow[] };
 }
 
 const TogglReply = ({ data }: TogglResponse) => {
   const [rows, setRows] = useState<JSX.Element[]>();
+  const [copied, setCopied] = useState<string>("");
   useEffect(() => {
-    const dataEntries = Object.entries(data ?? []);
-    const dataEntriesFormatted = dataEntries.map((entry) => {
-      return Object.values(entry[1]);
-    });
-    const length = dataEntriesFormatted?.[0]?.length;
-    function genRows() {
-      let newRows = [];
-      for (let i = 0; i < length; i++) {
-        newRows.push(
-          <tr key={"row-" + i}>
-            {dataEntriesFormatted.map((column) => {
-              return (
-                <td
-                  key={i + "-" + column[i]}
-                  className="border border-solid border-black p-1"
-                >
-                  {column[i]}
-                </td>
-              );
-            })}
-          </tr>
-        );
-      }
-      setRows(newRows);
-    }
-    genRows();
+    setCopied("");
   }, [data]);
+  const tableRef = useRef(null);
+  useEffect(() => {
+    const newRows = data?.Data?.map((row: any, i: number) => {
+      return (
+        <tr key={"row-" + i}>
+          <td key="date" className="border border-solid border-black p-1">
+            {row.Date}
+          </td>
+          <td key="branch" className="border border-solid border-black p-1">
+            {row.Branch}
+          </td>
+          <td key="charge" className="border border-solid border-black p-1">
+            {row["Charge Type"]}
+          </td>
+          <td key="project" className="border border-solid border-black p-1">
+            {row["Project No"]}
+          </td>
+          <td key="job" className="border border-solid border-black p-1">
+            {row["Job No"]}
+          </td>
+          <td key="description" className="border border-solid border-black p-1">
+            {row.Description}
+          </td>
+          <td key="hours" className="border border-solid border-black p-1">
+            {row.Hours}
+          </td>
+        </tr>
+      );
+    });
+    setRows(newRows);
+  }, [data]);
+
+  function handleCopy() {
+    const range = document.createRange();
+    range.selectNode(tableRef.current as unknown as Node);
+    window.getSelection()?.removeAllRanges();
+    window.getSelection()?.addRange(range);
+    document.execCommand("copy");
+    window.getSelection()?.removeAllRanges();
+    setCopied("copied");
+  }
+
   return (
     <div className="flex mt-4">
-      <table className="mx-auto border border-solid border-black">
-        <tbody>
-          <tr>
-            {[
-              "Date",
-              "Branch",
-              "Charge Type",
-              "Project No.",
-              "Job No.",
-              "Description",
-              "Hours",
-            ].map((name) => {
-              return (
-                <td key={name} className="border border-solid border-black p-1">
-                  {name}
-                </td>
-              );
-            })}
-          </tr>
-          {rows}
-        </tbody>
-      </table>
+      <div className="w-fit mx-auto flex flex-col">
+        <table ref={tableRef} className="border border-solid border-black">
+          <tbody>
+            <tr>
+              {[
+                "Date",
+                "Branch",
+                "Charge Type",
+                "Project No.",
+                "Job No.",
+                "Description",
+                "Hours",
+              ].map((name) => {
+                return (
+                  <td key={name} className="border border-solid border-black p-1">
+                    {name}
+                  </td>
+                );
+              })}
+            </tr>
+            {rows}
+          </tbody>
+        </table>
+        <button
+          onClick={handleCopy}
+          className="border border-solid border-black w-fit ml-auto inline-block justify-end mt-2 p-2 rounded hover:bg-black hover:text-white transition"
+        >
+          Copy Table Rows
+        </button>
+        <p className="ml-auto text-gray-600 text-sm mr-2">{copied}</p>
+      </div>
     </div>
   );
 };
@@ -74,7 +103,6 @@ export default function TogglForm() {
   const [data, setData] = useState<TogglResponse>();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    console.log("submit");
     e.preventDefault();
     setLoading("Loading...");
     const form = e.target as HTMLFormElement;
@@ -83,7 +111,6 @@ export default function TogglForm() {
     const email = formData.get("email");
     const date = formData.get("date");
     const raw = JSON.stringify({ togglapikey, email, date });
-    console.log(raw);
     const fetchData = async () => {
       const response = await fetch(
         "https://6worz4cmw2.execute-api.ap-southeast-2.amazonaws.com/dev",
@@ -176,7 +203,7 @@ export default function TogglForm() {
         </button>
       </form>
       {/*@ts-ignore*/}
-      {data?.Date && <TogglReply data={data} />}
+      {data && <TogglReply data={data} />}
     </div>
   );
 }
