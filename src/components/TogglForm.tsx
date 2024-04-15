@@ -3,11 +3,11 @@ import { useState } from "react";
 export default function TogglForm() {
   const [loading, setLoading] = useState("Submit");
 
-  function handleSubmit(e: any) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     console.log("submit");
     e.preventDefault();
     setLoading("Loading...");
-    const form = e.target;
+    const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const fetchData = async () => {
       const response = await fetch(
@@ -56,8 +56,12 @@ export default function TogglForm() {
             name="email"
             required
             defaultValue="rohan.nelson@gmail.com"
-            onInvalid={(e) => e.target.setCustomValidity("Please enter a valid email")}
-            onInput={(e) => e.target.setCustomValidity("")}
+            onInvalid={(e) =>
+              (e.target as HTMLInputElement).setCustomValidity(
+                "Please enter a valid email"
+              )
+            }
+            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
             className="border border-solid border-black mx-1 p-1"
           ></input>
         </label>
@@ -67,9 +71,11 @@ export default function TogglForm() {
             type="text"
             name="apiKey"
             onInvalid={(e) =>
-              e.target.setCustomValidity("Please enter your Toggl API key")
+              (e.target as HTMLInputElement).setCustomValidity(
+                "Please enter your Toggl API key"
+              )
             }
-            onInput={(e) => e.target.setCustomValidity("")}
+            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
             required
             className="border border-solid border-black mx-1 p-1"
           ></input>
@@ -81,9 +87,11 @@ export default function TogglForm() {
             name="date"
             required
             onInvalid={(e) =>
-              e.target.setCustomValidity("Please enter your desired date")
+              (e.target as HTMLInputElement).setCustomValidity(
+                "Please enter your desired date"
+              )
             }
-            onInput={(e) => e.target.setCustomValidity("")}
+            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
             className="border border-solid border-black mx-1"
           ></input>
         </label>
