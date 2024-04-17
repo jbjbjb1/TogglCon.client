@@ -62,37 +62,39 @@ const TogglReply = ({ data }: TogglResponse) => {
   }
 
   return (
-    <div className="flex mt-4">
-      <div className="w-fit mx-auto flex flex-col">
-        <table className="border border-solid border-black">
-          <tbody>
-            <tr>
-              {[
-                "Date",
-                "Branch",
-                "Charge Type",
-                "Project No.",
-                "Job No.",
-                "Description",
-                "Hours",
-              ].map((name) => {
-                return (
-                  <td key={name} className="border border-solid border-black p-1">
-                    {name}
-                  </td>
-                );
-              })}
-            </tr>
-          </tbody>
-          <tbody ref={tableRef}>{rows}</tbody>
-        </table>
+    <div className="flex mt-4 w-full">
+      <div className="flex flex-col w-fit mx-auto max-w-full">
+        <div className="w-fit mx-auto flex flex-col max-w-full overflow-x-scroll">
+          <table className="border border-solid border-black">
+            <tbody>
+              <tr>
+                {[
+                  "Date",
+                  "Branch",
+                  "Charge Type",
+                  "Project No.",
+                  "Job No.",
+                  "Description",
+                  "Hours",
+                ].map((name) => {
+                  return (
+                    <td key={name} className="border border-solid border-black p-1">
+                      {name}
+                    </td>
+                  );
+                })}
+              </tr>
+            </tbody>
+            <tbody ref={tableRef}>{rows}</tbody>
+          </table>
+        </div>
         <button
           onClick={handleCopy}
-          className="border border-solid border-black w-fit ml-auto inline-block justify-end mt-2 p-2 rounded hover:bg-black hover:text-white transition"
+          className="border border-solid border-black w-fit mx-auto inline-block justify-end mt-2 p-2 rounded hover:bg-black hover:text-white transition sm:mr-0"
         >
           Copy Table Rows
         </button>
-        <p className="ml-auto text-gray-600 text-sm mr-2">{copied}</p>
+        <p className="mx-auto text-gray-600 text-sm pr-2 sm:mr-0">{copied}</p>
       </div>
     </div>
   );
