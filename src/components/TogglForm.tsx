@@ -101,6 +101,7 @@ const TogglReply = ({ data }: TogglResponse) => {
 export default function TogglForm() {
   const [loading, setLoading] = useState("Submit");
   const [data, setData] = useState<TogglResponse>();
+  const [showApiKey, setShowApiKey] = useState<boolean>(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -142,8 +143,12 @@ export default function TogglForm() {
     setLoading("Submit");
   }
 
+  function toggleShowApiKey() {
+    setShowApiKey(!showApiKey);
+  }
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mt-4">
       <form
         id="protoform"
         method="POST"
@@ -158,7 +163,7 @@ export default function TogglForm() {
             type="email"
             name="email"
             required
-            defaultValue="rohan.nelson@gmail.com"
+            autoComplete="email"
             onInvalid={(e) =>
               (e.target as HTMLInputElement).setCustomValidity(
                 "Please enter a valid email"
@@ -168,21 +173,31 @@ export default function TogglForm() {
             className="border border-solid border-black mx-1 p-1"
           ></input>
         </label>
-        <label>
-          API key
-          <input
-            type="text"
-            name="togglapikey"
-            onInvalid={(e) =>
-              (e.target as HTMLInputElement).setCustomValidity(
-                "Please enter your Toggl API key"
-              )
-            }
-            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
-            required
-            className="border border-solid border-black mx-1 p-1"
-          ></input>
-        </label>
+        <div className="flex flex-col">
+          <label>
+            API key
+            <input
+              type={showApiKey ? "text" : "password"}
+              name="togglapikey"
+              autoComplete="password"
+              onInvalid={(e) =>
+                (e.target as HTMLInputElement).setCustomValidity(
+                  "Please enter your Toggl API key"
+                )
+              }
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+              required
+              className="border border-solid border-black mx-1 p-1"
+            ></input>
+          </label>
+          <button
+            type="button"
+            onClick={toggleShowApiKey}
+            className="w-fit h-fit border border-solid border-gray-600 rounded ml-auto p-0.5 text-sm px-1 mt-1 mr-1 hover:bg-black hover:text-white transition"
+          >
+            Show API Key
+          </button>
+        </div>
         <label>
           Date
           <input
@@ -198,7 +213,10 @@ export default function TogglForm() {
             className="border border-solid border-black mx-1"
           ></input>
         </label>
-        <button type="submit" className="border border-solid border-black">
+        <button
+          type="submit"
+          className="border border-solid border-black rounded hover:bg-black hover:text-white transition"
+        >
           {loading}
         </button>
       </form>
