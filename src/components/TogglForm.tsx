@@ -62,37 +62,39 @@ const TogglReply = ({ data }: TogglResponse) => {
   }
 
   return (
-    <div className="flex mt-4">
-      <div className="w-fit mx-auto flex flex-col">
-        <table ref={tableRef} className="border border-solid border-black">
-          <tbody>
-            <tr>
-              {[
-                "Date",
-                "Branch",
-                "Charge Type",
-                "Project No.",
-                "Job No.",
-                "Description",
-                "Hours",
-              ].map((name) => {
-                return (
-                  <td key={name} className="border border-solid border-black p-1">
-                    {name}
-                  </td>
-                );
-              })}
-            </tr>
-            {rows}
-          </tbody>
-        </table>
+    <div className="flex mt-4 w-full">
+      <div className="flex flex-col w-fit mx-auto max-w-full">
+        <div className="w-fit mx-auto flex flex-col max-w-full overflow-x-scroll">
+          <table className="border border-solid border-black">
+            <tbody>
+              <tr>
+                {[
+                  "Date",
+                  "Branch",
+                  "Charge Type",
+                  "Project No.",
+                  "Job No.",
+                  "Description",
+                  "Hours",
+                ].map((name) => {
+                  return (
+                    <td key={name} className="border border-solid border-black p-1">
+                      {name}
+                    </td>
+                  );
+                })}
+              </tr>
+            </tbody>
+            <tbody ref={tableRef}>{rows}</tbody>
+          </table>
+        </div>
         <button
           onClick={handleCopy}
-          className="border border-solid border-black w-fit ml-auto inline-block justify-end mt-2 p-2 rounded hover:bg-black hover:text-white transition"
+          className="border border-solid border-black w-fit mx-auto inline-block justify-end mt-2 p-2 rounded hover:bg-black hover:text-white transition sm:mr-0"
         >
           Copy Table Rows
         </button>
-        <p className="ml-auto text-gray-600 text-sm mr-2">{copied}</p>
+        <p className="mx-auto text-gray-600 text-sm pr-2 sm:mr-0">{copied}</p>
       </div>
     </div>
   );
@@ -101,6 +103,7 @@ const TogglReply = ({ data }: TogglResponse) => {
 export default function TogglForm() {
   const [loading, setLoading] = useState("Submit");
   const [data, setData] = useState<TogglResponse>();
+  const [showApiKey, setShowApiKey] = useState<boolean>(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -142,8 +145,12 @@ export default function TogglForm() {
     setLoading("Submit");
   }
 
+  function toggleShowApiKey() {
+    setShowApiKey(!showApiKey);
+  }
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mt-4">
       <form
         id="protoform"
         method="POST"
@@ -158,7 +165,7 @@ export default function TogglForm() {
             type="email"
             name="email"
             required
-            defaultValue="rohan.nelson@gmail.com"
+            autoComplete="email"
             onInvalid={(e) =>
               (e.target as HTMLInputElement).setCustomValidity(
                 "Please enter a valid email"
@@ -168,21 +175,31 @@ export default function TogglForm() {
             className="border border-solid border-black mx-1 p-1"
           ></input>
         </label>
-        <label>
-          API key
-          <input
-            type="text"
-            name="togglapikey"
-            onInvalid={(e) =>
-              (e.target as HTMLInputElement).setCustomValidity(
-                "Please enter your Toggl API key"
-              )
-            }
-            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
-            required
-            className="border border-solid border-black mx-1 p-1"
-          ></input>
-        </label>
+        <div className="flex flex-col">
+          <label>
+            API key
+            <input
+              type={showApiKey ? "text" : "password"}
+              name="togglapikey"
+              autoComplete="password"
+              onInvalid={(e) =>
+                (e.target as HTMLInputElement).setCustomValidity(
+                  "Please enter your Toggl API key"
+                )
+              }
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+              required
+              className="border border-solid border-black mx-1 p-1"
+            ></input>
+          </label>
+          <button
+            type="button"
+            onClick={toggleShowApiKey}
+            className="w-fit h-fit border border-solid border-gray-600 rounded ml-auto p-0.5 text-sm px-1 mt-1 mr-1 hover:bg-black hover:text-white transition"
+          >
+            Show API Key
+          </button>
+        </div>
         <label>
           Date
           <input
@@ -198,7 +215,10 @@ export default function TogglForm() {
             className="border border-solid border-black mx-1"
           ></input>
         </label>
-        <button type="submit" className="border border-solid border-black">
+        <button
+          type="submit"
+          className="border border-solid border-black rounded hover:bg-black hover:text-white transition"
+        >
           {loading}
         </button>
       </form>
