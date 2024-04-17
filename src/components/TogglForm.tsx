@@ -64,7 +64,7 @@ const TogglReply = ({ data }: TogglResponse) => {
   return (
     <div className="flex mt-4">
       <div className="w-fit mx-auto flex flex-col">
-        <table ref={tableRef} className="border border-solid border-black">
+        <table className="border border-solid border-black">
           <tbody>
             <tr>
               {[
@@ -83,8 +83,8 @@ const TogglReply = ({ data }: TogglResponse) => {
                 );
               })}
             </tr>
-            {rows}
           </tbody>
+          <tbody ref={tableRef}>{rows}</tbody>
         </table>
         <button
           onClick={handleCopy}
