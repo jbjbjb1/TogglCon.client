@@ -80,8 +80,16 @@ const TogglReply = ({ data }: TogglResponse) => {
                   );
                 })}
               </tr>
+              {rows}
             </tbody>
-            <tbody ref={tableRef}>{rows}</tbody>
+          </table>
+          {/*Hidden table without header for copying*/}
+          <table
+            aria-hidden="true"
+            ref={tableRef}
+            className="absolute w-0 h-0 -top-96 -left-96"
+          >
+            <tbody>{rows}</tbody>
           </table>
         </div>
         <button
