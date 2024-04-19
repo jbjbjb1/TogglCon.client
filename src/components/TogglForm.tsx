@@ -10,10 +10,10 @@ interface DataRow {
 }
 
 interface TogglResponse {
-  data: { Data: DataRow[] };
+  Data: DataRow[];
 }
 
-const TogglReply = ({ data }: TogglResponse) => {
+const TogglReply = ({ data }: { data: TogglResponse }) => {
   const [rows, setRows] = useState<JSX.Element[]>();
   const [copied, setCopied] = useState<string>("");
   useEffect(() => {
@@ -21,7 +21,7 @@ const TogglReply = ({ data }: TogglResponse) => {
   }, [data]);
   const tableRef = useRef(null);
   useEffect(() => {
-    const newRows = data?.Data?.map((row: any, i: number) => {
+    const newRows = data?.Data?.map((row: DataRow, i: number) => {
       return (
         <tr key={"row-" + i}>
           <td key="date" className="border border-solid border-black p-1">
@@ -50,7 +50,12 @@ const TogglReply = ({ data }: TogglResponse) => {
 
   function handleCopy() {
     const range = document.createRange();
-    range.selectNode(tableRef.current as unknown as Node);
+    if (tableRef.current != null) {
+      range.selectNode(tableRef.current);
+    } else {
+      setCopied("error");
+      return;
+    }
     window.getSelection()?.removeAllRanges();
     window.getSelection()?.addRange(range);
     document.execCommand("copy");
@@ -226,7 +231,6 @@ export default function TogglForm() {
           {loading}
         </button>
       </form>
-      {/*@ts-ignore*/}
       {data && <TogglReply data={data} />}
     </div>
   );
