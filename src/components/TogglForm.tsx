@@ -122,7 +122,8 @@ export default function TogglForm() {
     const togglapikey = formData.get("togglapikey");
     const email = formData.get("email");
     const date = formData.get("date");
-    const raw = JSON.stringify({ togglapikey, email, date });
+    const workspace_ID = formData.get("workspace_ID");
+    const raw = JSON.stringify({ togglapikey, email, date, workspace_ID });
     const fetchData = async () => {
       const response = await fetch(
         "https://6worz4cmw2.execute-api.ap-southeast-2.amazonaws.com/dev",
@@ -209,6 +210,21 @@ export default function TogglForm() {
             Show API Key
           </button>
         </div>
+        <label>
+          Workspace ID
+          <input
+            type="text"
+            name="workspace_ID"
+            required
+            onInvalid={(e) =>
+              (e.target as HTMLInputElement).setCustomValidity(
+                "Please enter a workspace ID"
+              )
+            }
+            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+            className="border border-solid border-black mx-1 p-1"
+          ></input>
+        </label>
         <label>
           Date
           <input
