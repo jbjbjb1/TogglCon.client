@@ -75,6 +75,7 @@ const TogglReply = ({ data }: { data: TogglResponse }) => {
               <tr>
                 {[
                   "Date",
+                  "Branch",
                   "Charge Type",
                   "Project No.",
                   "Job No.",
