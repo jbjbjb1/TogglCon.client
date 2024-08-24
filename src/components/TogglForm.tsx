@@ -27,6 +27,9 @@ const TogglReply = ({ data }: { data: TogglResponse }) => {
           <td key="date" className="border border-solid border-black p-1">
             {row.Date}
           </td>
+          <td key="branch" className="border border-solid border-black p-1">
+            {row.Branch}
+          </td>
           <td key="charge" className="border border-solid border-black p-1">
             {row["Charge Type"]}
           </td>
